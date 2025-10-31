@@ -30,6 +30,7 @@ const Agendamento = () => {
   const [telefone, setTelefone] = useState("");
   const [modelo, setModelo] = useState("");
   const [servico, setServico] = useState("");
+  const [tipoTela, setTipoTela] = useState("");
   const [descricao, setDescricao] = useState("");
   const [date, setDate] = useState<Date>();
   const [horario, setHorario] = useState("");
@@ -87,9 +88,18 @@ const Agendamento = () => {
         return;
       }
 
+      if (servico === "Troca de tela" && !tipoTela) {
+        toast.error("Selecione o tipo de tela");
+        return;
+      }
+
       setLoading(true);
 
       const dataEntrega = calcularDataEntrega(date);
+
+      const descricaoCompleta = servico === "Troca de tela" 
+        ? `Tipo de tela: ${tipoTela}\n\n${validacao.descricao}`
+        : validacao.descricao;
 
       const { data, error } = await supabase
         .from("agendamentos")
@@ -98,7 +108,7 @@ const Agendamento = () => {
           telefone: validacao.telefone,
           modelo_celular: validacao.modelo,
           tipo_servico: validacao.servico,
-          descricao_problema: validacao.descricao,
+          descricao_problema: descricaoCompleta,
           data_agendamento: format(date, "yyyy-MM-dd"),
           horario_agendamento: horario,
           data_entrega_prevista: dataEntrega,
@@ -182,7 +192,7 @@ const Agendamento = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="servico">Tipo de Serviço *</Label>
-                <Select value={servico} onValueChange={setServico} required>
+                <Select value={servico} onValueChange={(value) => { setServico(value); setTipoTela(""); }} required>
                   <SelectTrigger className="bg-secondary border-border">
                     <SelectValue placeholder="Selecione o serviço" />
                   </SelectTrigger>
@@ -196,6 +206,25 @@ const Agendamento = () => {
                   </SelectContent>
                 </Select>
               </div>
+
+              {servico === "Troca de tela" && (
+                <div className="space-y-2">
+                  <Label htmlFor="tipoTela">Tipo de Tela *</Label>
+                  <Select value={tipoTela} onValueChange={setTipoTela} required>
+                    <SelectTrigger className="bg-secondary border-border">
+                      <SelectValue placeholder="Selecione o tipo de tela" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover border-border z-50">
+                      <SelectItem value="Original">Tela Original</SelectItem>
+                      <SelectItem value="Premium">Tela Premium (AAA)</SelectItem>
+                      <SelectItem value="Intermediária">Tela Intermediária (AA)</SelectItem>
+                      <SelectItem value="Econômica">Tela Econômica (A)</SelectItem>
+                      <SelectItem value="OLED">Tela OLED</SelectItem>
+                      <SelectItem value="LCD">Tela LCD</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="descricao">Descrição do Problema *</Label>
