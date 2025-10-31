@@ -215,12 +215,10 @@ const Agendamento = () => {
                       <SelectValue placeholder="Selecione o tipo de tela" />
                     </SelectTrigger>
                     <SelectContent className="bg-popover border-border z-50">
-                      <SelectItem value="Original">Tela Original</SelectItem>
-                      <SelectItem value="Premium">Tela Premium (AAA)</SelectItem>
-                      <SelectItem value="Intermediária">Tela Intermediária (AA)</SelectItem>
-                      <SelectItem value="Econômica">Tela Econômica (A)</SelectItem>
-                      <SelectItem value="OLED">Tela OLED</SelectItem>
-                      <SelectItem value="LCD">Tela LCD</SelectItem>
+                      <SelectItem value="FRONTAL INCELL">FRONTAL INCELL</SelectItem>
+                      <SelectItem value="FRONTAL ORIGINAL PRIMEIRA LINHA">FRONTAL ORIGINAL PRIMEIRA LINHA</SelectItem>
+                      <SelectItem value="FRONTAL ORIGINAL">FRONTAL ORIGINAL</SelectItem>
+                      <SelectItem value="FRONTAL ORIGINAL TROCA C.I">FRONTAL ORIGINAL TROCA C.I</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
