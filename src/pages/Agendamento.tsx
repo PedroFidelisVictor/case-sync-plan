@@ -31,6 +31,7 @@ const Agendamento = () => {
   const [modelo, setModelo] = useState("");
   const [servico, setServico] = useState("");
   const [tipoTela, setTipoTela] = useState("");
+  const [tipoBateria, setTipoBateria] = useState("");
   const [descricao, setDescricao] = useState("");
   const [date, setDate] = useState<Date>();
   const [horario, setHorario] = useState("");
@@ -93,13 +94,22 @@ const Agendamento = () => {
         return;
       }
 
+      if (servico === "Bateria" && !tipoBateria) {
+        toast.error("Selecione o tipo de bateria");
+        return;
+      }
+
       setLoading(true);
 
       const dataEntrega = calcularDataEntrega(date);
 
-      const descricaoCompleta = servico === "Troca de tela" 
-        ? `Tipo de tela: ${tipoTela}\n\n${validacao.descricao}`
-        : validacao.descricao;
+      let descricaoCompleta = validacao.descricao;
+      
+      if (servico === "Troca de tela") {
+        descricaoCompleta = `Tipo de tela: ${tipoTela}\n\n${validacao.descricao}`;
+      } else if (servico === "Bateria") {
+        descricaoCompleta = `Tipo de bateria: ${tipoBateria}\n\n${validacao.descricao}`;
+      }
 
       const { data, error } = await supabase
         .from("agendamentos")
@@ -192,7 +202,7 @@ const Agendamento = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="servico">Tipo de Serviço *</Label>
-                <Select value={servico} onValueChange={(value) => { setServico(value); setTipoTela(""); }} required>
+                <Select value={servico} onValueChange={(value) => { setServico(value); setTipoTela(""); setTipoBateria(""); }} required>
                   <SelectTrigger className="bg-secondary border-border">
                     <SelectValue placeholder="Selecione o serviço" />
                   </SelectTrigger>
@@ -219,6 +229,21 @@ const Agendamento = () => {
                       <SelectItem value="FRONTAL ORIGINAL PRIMEIRA LINHA">FRONTAL ORIGINAL PRIMEIRA LINHA</SelectItem>
                       <SelectItem value="FRONTAL ORIGINAL">FRONTAL ORIGINAL</SelectItem>
                       <SelectItem value="FRONTAL ORIGINAL TROCA C.I">FRONTAL ORIGINAL TROCA C.I</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {servico === "Bateria" && (
+                <div className="space-y-2">
+                  <Label htmlFor="tipoBateria">Tipo de Bateria *</Label>
+                  <Select value={tipoBateria} onValueChange={setTipoBateria} required>
+                    <SelectTrigger className="bg-secondary border-border">
+                      <SelectValue placeholder="Selecione o tipo de bateria" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover border-border z-50">
+                      <SelectItem value="Bateria Primeira Linha Premium">Bateria Primeira Linha Premium</SelectItem>
+                      <SelectItem value="Bateria Original troca C.I">Bateria Original troca C.I</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
