@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Smartphone, Clock, Shield, CheckCircle2 } from "lucide-react";
 import logo from "@/assets/logo.png";
+import newcaseLogo from "@/assets/newcase-logo.png";
 
 const Home = () => {
   return (
@@ -11,8 +12,8 @@ const Home = () => {
       <header className="border-b-2 border-border backdrop-blur-sm sticky top-0 z-50 bg-background/80">
         <div className="container mx-auto px-4 py-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <h1 className="text-3xl md:text-4xl font-bold neon-text">NEW CASE</h1>
-            <img src={logo} alt="NEW CASE Logo" className="h-12 md:h-16 w-auto" />
+            <img src={newcaseLogo} alt="NEW CASE" className="h-16 md:h-20 w-auto" />
+            <img src={logo} alt="Logo" className="h-12 md:h-16 w-auto" />
           </div>
           <Link to="/agendar">
             <Button className="bg-primary text-primary-foreground hover:bg-primary/90 neon-border font-semibold">
