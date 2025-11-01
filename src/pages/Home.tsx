@@ -2,14 +2,18 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Smartphone, Clock, Shield, CheckCircle2 } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const Home = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border backdrop-blur-sm sticky top-0 z-50 bg-background/80">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-bold neon-text">NEW CASE</h1>
+      <header className="border-b-2 border-border backdrop-blur-sm sticky top-0 z-50 bg-background/80">
+        <div className="container mx-auto px-4 py-6 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <h1 className="text-3xl md:text-4xl font-bold neon-text">NEW CASE</h1>
+            <img src={logo} alt="NEW CASE Logo" className="h-12 md:h-16 w-auto" />
+          </div>
           <Link to="/agendar">
             <Button className="bg-primary text-primary-foreground hover:bg-primary/90 neon-border font-semibold">
               Agendar Agora
