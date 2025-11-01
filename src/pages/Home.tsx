@@ -12,7 +12,7 @@ const Home = () => {
       <header className="border-b-2 border-border backdrop-blur-sm sticky top-0 z-50 bg-background/80">
         <div className="container mx-auto px-4 py-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <img src={newcaseLogo} alt="NEW CASE" className="h-20 md:h-24 w-auto" />
+            <img src={newcaseLogo} alt="NEW CASE" className="h-14 md:h-18 w-auto" />
             <img src={logo} alt="Logo" className="h-12 md:h-16 w-auto" />
           </div>
           <Link to="/agendar">
