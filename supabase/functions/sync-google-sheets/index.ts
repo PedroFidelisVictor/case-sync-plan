@@ -49,19 +49,14 @@ serve(async (req) => {
       );
     }
 
-    // Formatar dados para o Google Sheets
+    // Formatar dados para o Google Sheets na ordem que a planilha espera
     const sheetData = {
-      codigo: payload.record.codigo_cliente,
-      nome: payload.record.nome,
-      telefone: payload.record.telefone,
-      modelo: payload.record.modelo_celular,
-      servico: payload.record.tipo_servico,
-      descricao: payload.record.descricao_problema,
-      data: payload.record.data_agendamento,
-      horario: payload.record.horario_agendamento.substring(0, 5),
-      status: payload.record.status,
-      dataEntrega: payload.record.data_entrega_prevista,
-      dataCriacao: payload.record.created_at,
+      NOME: payload.record.nome,
+      TELEFONE: payload.record.telefone,
+      MODELO: payload.record.modelo_celular,
+      SERVICO: payload.record.tipo_servico,
+      TIPO: payload.record.tipo_servico, // tipo do serviço
+      DESCRICAO: payload.record.descricao_problema,
     };
 
     // Enviar para Google Sheets via webhook
