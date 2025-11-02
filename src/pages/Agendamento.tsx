@@ -333,10 +333,12 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   const dados = {
-    nome,
-    telefone,
-    modelo,
-    problema,
+    NOMW,
+    TELFONE,
+    MODELO,
+    SERVIÇO,
+    TIPO,
+    DESCRIÇÃO,
     data: new Date().toLocaleString('pt-BR'),
     observacoes,
   };
