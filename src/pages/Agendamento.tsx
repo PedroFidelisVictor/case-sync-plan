@@ -329,3 +329,22 @@ const Agendamento = () => {
 };
 
 export default Agendamento;
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const dados = {
+    nome,
+    telefone,
+    modelo,
+    problema,
+    data: new Date().toLocaleString('pt-BR'),
+    observacoes,
+  };
+
+  await fetch("https://script.google.com/macros/s/AKfycbx7iNHyCDVXRO68L8ER-8vmJgeKS7WS2x3irCKP_yzcOeUaVvm9pelfGfP2bFSEqjrWJw/exec", {
+    method: "POST",
+    body: JSON.stringify(dados),
+  });
+
+  alert("Formulário enviado com sucesso!");
+};
