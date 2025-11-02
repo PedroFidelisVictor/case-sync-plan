@@ -133,6 +133,15 @@ const Agendamento = () => {
         duration: 5000,
       });
 
+      // Dispara a sincronização com Google Sheets (não bloqueia a navegação)
+      try {
+        await supabase.functions.invoke('sync-google-sheets', {
+          body: { type: 'INSERT', record: data },
+        });
+      } catch (e) {
+        console.log('Falha ao sincronizar com Sheets', e);
+      }
+
       setTimeout(() => {
         navigate("/acompanhar", { state: { codigo: data.codigo_cliente } });
       }, 2000);
