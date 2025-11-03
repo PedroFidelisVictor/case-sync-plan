@@ -49,14 +49,18 @@ serve(async (req) => {
       );
     }
 
-    // Formatar dados para o Google Sheets na ordem que a planilha espera
+    // Formatar dados para o Google Sheets
     const sheetData = {
+      CODIGO: payload.record.codigo_cliente,
       NOME: payload.record.nome,
       TELEFONE: payload.record.telefone,
       MODELO: payload.record.modelo_celular,
       SERVICO: payload.record.tipo_servico,
-      TIPO: payload.record.tipo_servico, // tipo do serviço
       DESCRICAO: payload.record.descricao_problema,
+      DATA_AGENDAMENTO: payload.record.data_agendamento,
+      HORARIO: payload.record.horario_agendamento,
+      STATUS: payload.record.status,
+      DATA_ENTREGA: payload.record.data_entrega_prevista,
     };
 
     // Enviar para Google Sheets via webhook
@@ -68,8 +72,11 @@ serve(async (req) => {
       body: JSON.stringify(sheetData),
     });
 
+    const responseText = await response.text();
+    console.log('Resposta do Google Sheets:', responseText);
+
     if (!response.ok) {
-      throw new Error(`Erro ao enviar para Google Sheets: ${response.statusText}`);
+      throw new Error(`Erro ao enviar para Google Sheets: ${response.statusText} - ${responseText}`);
     }
 
     console.log('Dados enviados para Google Sheets com sucesso');
