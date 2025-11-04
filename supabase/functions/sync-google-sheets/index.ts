@@ -49,7 +49,7 @@ serve(async (req) => {
       );
     }
 
-    // Formatar dados para o Google Sheets
+    // Formatar dados para o Google Sheets com data/hora para ordenação
     const sheetData = {
       CODIGO: payload.record.codigo_cliente,
       NOME: payload.record.nome,
@@ -61,6 +61,7 @@ serve(async (req) => {
       HORARIO: payload.record.horario_agendamento,
       STATUS: payload.record.status,
       DATA_ENTREGA: payload.record.data_entrega_prevista,
+      DATA_HORA_CRIACAO: payload.record.created_at,
     };
 
     // Enviar para Google Sheets via webhook
