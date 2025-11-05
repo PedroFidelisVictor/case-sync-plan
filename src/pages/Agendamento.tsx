@@ -61,11 +61,6 @@ const Agendamento = () => {
     }
   };
 
-  const calcularDataEntrega = (dataAgendamento: Date): string => {
-    const entrega = new Date(dataAgendamento);
-    entrega.setDate(entrega.getDate() + 3);
-    return format(entrega, "yyyy-MM-dd");
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,8 +96,6 @@ const Agendamento = () => {
 
       setLoading(true);
 
-      const dataEntrega = calcularDataEntrega(date);
-
       let descricaoCompleta = validacao.descricao;
       
       if (servico === "Troca de tela") {
@@ -121,7 +114,6 @@ const Agendamento = () => {
           descricao_problema: descricaoCompleta,
           data_agendamento: format(date, "yyyy-MM-dd"),
           horario_agendamento: horario,
-          data_entrega_prevista: dataEntrega,
           codigo_cliente: "",
         })
         .select()

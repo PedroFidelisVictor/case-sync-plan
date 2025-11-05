@@ -49,19 +49,16 @@ serve(async (req) => {
       );
     }
 
-    // Formatar dados para o Google Sheets com data/hora para ordenação
+    // Formatar dados para o Google Sheets na ordem solicitada
     const sheetData = {
       CODIGO: payload.record.codigo_cliente,
+      DATA_AGENDAMENTO: payload.record.data_agendamento,
+      HORARIO: payload.record.horario_agendamento,
       NOME: payload.record.nome,
       TELEFONE: payload.record.telefone,
       MODELO: payload.record.modelo_celular,
       SERVICO: payload.record.tipo_servico,
       DESCRICAO: payload.record.descricao_problema,
-      DATA_AGENDAMENTO: payload.record.data_agendamento,
-      HORARIO: payload.record.horario_agendamento,
-      STATUS: payload.record.status,
-      DATA_ENTREGA: payload.record.data_entrega_prevista,
-      DATA_HORA_CRIACAO: payload.record.created_at,
     };
 
     // Enviar para Google Sheets via webhook
