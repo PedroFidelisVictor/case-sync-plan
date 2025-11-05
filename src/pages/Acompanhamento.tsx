@@ -20,7 +20,6 @@ interface Agendamento {
   data_agendamento: string;
   horario_agendamento: string;
   status: string;
-  data_entrega_prevista: string;
   created_at: string;
 }
 
@@ -173,12 +172,6 @@ const Acompanhamento = () => {
                     <p className="text-sm text-muted-foreground">Data Agendamento</p>
                     <p className="font-semibold">
                       {format(new Date(agendamento.data_agendamento), "dd/MM/yyyy", { locale: ptBR })} às {agendamento.horario_agendamento.substring(0, 5)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Previsão de Entrega</p>
-                    <p className="font-semibold text-primary">
-                      {format(new Date(agendamento.data_entrega_prevista), "dd/MM/yyyy", { locale: ptBR })}
                     </p>
                   </div>
                 </div>
