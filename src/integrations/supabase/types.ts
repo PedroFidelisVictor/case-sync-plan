@@ -19,7 +19,7 @@ export type Database = {
           codigo_cliente: string
           created_at: string
           data_agendamento: string
-          data_entrega_prevista: string
+          data_entrega_prevista: string | null
           descricao_problema: string
           horario_agendamento: string
           id: string
@@ -34,7 +34,7 @@ export type Database = {
           codigo_cliente: string
           created_at?: string
           data_agendamento: string
-          data_entrega_prevista: string
+          data_entrega_prevista?: string | null
           descricao_problema: string
           horario_agendamento: string
           id?: string
@@ -49,7 +49,7 @@ export type Database = {
           codigo_cliente?: string
           created_at?: string
           data_agendamento?: string
-          data_entrega_prevista?: string
+          data_entrega_prevista?: string | null
           descricao_problema?: string
           horario_agendamento?: string
           id?: string
