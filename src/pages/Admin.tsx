@@ -72,13 +72,12 @@ const Admin = () => {
     setLoading(true);
     console.log("Iniciando busca de agendamentos...");
     
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
       .from("agendamentos")
-      .select("*")
-      .order("data_agendamento", { ascending: false })
-      .order("horario_agendamento", { ascending: false });
+      .select("*", { count: "exact" })
+      .order("created_at", { ascending: false });
 
-    console.log("Resultado da busca:", { data, error, count: data?.length });
+    console.log("Resultado da busca:", { data, error, count: count ?? data?.length });
 
     if (error) {
       toast.error("Erro ao carregar agendamentos");
