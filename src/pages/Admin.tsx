@@ -37,19 +37,25 @@ const Admin = () => {
   }, []);
 
   const checkAuth = async () => {
+    console.log("Verificando autenticação...");
     const { data: { session } } = await supabase.auth.getSession();
+    console.log("Sessão:", session?.user?.id);
     
     if (!session) {
+      console.log("Sem sessão, redirecionando para /auth");
       navigate("/auth");
       return;
     }
 
-    const { data: roles } = await supabase
+    console.log("Verificando role de admin...");
+    const { data: roles, error: roleError } = await supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", session.user.id)
       .eq("role", "admin")
       .maybeSingle();
+
+    console.log("Resultado da verificação de role:", { roles, roleError });
 
     if (!roles) {
       toast.error("Acesso negado. Você não é administrador.");
@@ -57,22 +63,28 @@ const Admin = () => {
       return;
     }
 
+    console.log("Usuário é admin, carregando agendamentos...");
     setIsAdmin(true);
     fetchAgendamentos();
   };
 
   const fetchAgendamentos = async () => {
     setLoading(true);
+    console.log("Iniciando busca de agendamentos...");
+    
     const { data, error } = await supabase
       .from("agendamentos")
       .select("*")
       .order("data_agendamento", { ascending: false })
       .order("horario_agendamento", { ascending: false });
 
+    console.log("Resultado da busca:", { data, error, count: data?.length });
+
     if (error) {
       toast.error("Erro ao carregar agendamentos");
-      console.error(error);
+      console.error("Erro detalhado:", error);
     } else {
+      console.log("Agendamentos carregados com sucesso:", data?.length);
       setAgendamentos(data || []);
     }
     setLoading(false);
