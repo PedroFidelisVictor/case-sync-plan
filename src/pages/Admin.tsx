@@ -10,10 +10,12 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { LogOut, Trash2 } from "lucide-react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import logo from "@/assets/logo.png";
 import newcaseLogo from "@/assets/newcase-logo.png";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Eye } from "lucide-react";
 
 interface Agendamento {
   id: string;
@@ -239,6 +241,7 @@ const Admin = () => {
                       <TableHead>Código</TableHead>
                       <TableHead>Cliente</TableHead>
                       <TableHead>Telefone</TableHead>
+                      <TableHead>Modelo</TableHead>
                       <TableHead>Serviço</TableHead>
                       <TableHead>Data/Hora</TableHead>
                       <TableHead>Status</TableHead>
@@ -258,18 +261,14 @@ const Admin = () => {
                           {agendamento.codigo_cliente}
                         </TableCell>
                         <TableCell>
-                          <div>
-                            <p className="font-medium">{agendamento.nome}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {agendamento.modelo_celular}
-                            </p>
-                          </div>
+                          <p className="font-medium">{agendamento.nome}</p>
                         </TableCell>
                         <TableCell>{agendamento.telefone}</TableCell>
+                        <TableCell>{agendamento.modelo_celular}</TableCell>
                         <TableCell>{agendamento.tipo_servico}</TableCell>
                         <TableCell>
                           <div className="text-sm">
-                            <p>{format(new Date(agendamento.data_agendamento), "dd/MM/yyyy", { locale: ptBR })}</p>
+                            <p>{format(parseISO(agendamento.data_agendamento), "dd/MM/yyyy", { locale: ptBR })}</p>
                             <p className="text-muted-foreground">
                               {agendamento.horario_agendamento.substring(0, 5)}
                             </p>
@@ -293,28 +292,92 @@ const Admin = () => {
                           </Select>
                         </TableCell>
                         <TableCell>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="destructive" size="sm">
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Cancelar Agendamento</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Tem certeza que deseja cancelar este agendamento? Esta ação não pode ser desfeita
-                                  e o horário ficará disponível novamente.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleDelete(agendamento.id)}>
-                                  Confirmar
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                          <div className="flex gap-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm">
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl">
+                                <DialogHeader>
+                                  <DialogTitle>Detalhes do Agendamento</DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                      <p className="text-sm font-medium text-muted-foreground">Código</p>
+                                      <p className="font-mono font-semibold">{agendamento.codigo_cliente}</p>
+                                    </div>
+                                    <div>
+                                      <p className="text-sm font-medium text-muted-foreground">Status</p>
+                                      {getStatusBadge(agendamento.status)}
+                                    </div>
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                      <p className="text-sm font-medium text-muted-foreground">Nome</p>
+                                      <p>{agendamento.nome}</p>
+                                    </div>
+                                    <div>
+                                      <p className="text-sm font-medium text-muted-foreground">Telefone</p>
+                                      <p>{agendamento.telefone}</p>
+                                    </div>
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                      <p className="text-sm font-medium text-muted-foreground">Modelo do Celular</p>
+                                      <p>{agendamento.modelo_celular}</p>
+                                    </div>
+                                    <div>
+                                      <p className="text-sm font-medium text-muted-foreground">Tipo de Serviço</p>
+                                      <p>{agendamento.tipo_servico}</p>
+                                    </div>
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                      <p className="text-sm font-medium text-muted-foreground">Data do Agendamento</p>
+                                      <p>{format(parseISO(agendamento.data_agendamento), "dd/MM/yyyy", { locale: ptBR })}</p>
+                                    </div>
+                                    <div>
+                                      <p className="text-sm font-medium text-muted-foreground">Horário</p>
+                                      <p>{agendamento.horario_agendamento.substring(0, 5)}</p>
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-medium text-muted-foreground">Descrição do Problema</p>
+                                    <p className="mt-1 p-3 bg-muted rounded-md">{agendamento.descricao_problema}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-medium text-muted-foreground">Criado em</p>
+                                    <p>{format(new Date(agendamento.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</p>
+                                  </div>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="destructive" size="sm">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Cancelar Agendamento</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Tem certeza que deseja cancelar este agendamento? Esta ação não pode ser desfeita
+                                    e o horário ficará disponível novamente.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleDelete(agendamento.id)}>
+                                    Confirmar
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
