@@ -7,8 +7,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { LogOut, Trash2, Edit } from "lucide-react";
+import { LogOut, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -30,6 +31,7 @@ const Admin = () => {
   const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -117,6 +119,35 @@ const Admin = () => {
     }
   };
 
+  const handleDeleteMultiple = async () => {
+    const { error } = await supabase
+      .from("agendamentos")
+      .delete()
+      .in("id", selectedIds);
+
+    if (error) {
+      toast.error("Erro ao cancelar agendamentos");
+    } else {
+      toast.success(`${selectedIds.length} agendamento(s) cancelado(s) com sucesso!`);
+      setSelectedIds([]);
+      fetchAgendamentos();
+    }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === agendamentos.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(agendamentos.map(a => a.id));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/");
@@ -151,7 +182,33 @@ const Admin = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Agendamentos ({agendamentos.length})</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>Agendamentos ({agendamentos.length})</CardTitle>
+              {selectedIds.length > 0 && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive">
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Excluir Selecionados ({selectedIds.length})
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Cancelar Agendamentos</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Tem certeza que deseja cancelar {selectedIds.length} agendamento(s)? Esta ação não pode ser desfeita.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteMultiple}>
+                        Confirmar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -163,6 +220,12 @@ const Admin = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead className="w-12">
+                        <Checkbox
+                          checked={selectedIds.length === agendamentos.length && agendamentos.length > 0}
+                          onCheckedChange={toggleSelectAll}
+                        />
+                      </TableHead>
                       <TableHead>Código</TableHead>
                       <TableHead>Cliente</TableHead>
                       <TableHead>Telefone</TableHead>
@@ -175,6 +238,12 @@ const Admin = () => {
                   <TableBody>
                     {agendamentos.map((agendamento) => (
                       <TableRow key={agendamento.id}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedIds.includes(agendamento.id)}
+                            onCheckedChange={() => toggleSelect(agendamento.id)}
+                          />
+                        </TableCell>
                         <TableCell className="font-mono font-semibold">
                           {agendamento.codigo_cliente}
                         </TableCell>
