@@ -12,6 +12,8 @@ import { toast } from "sonner";
 import { LogOut, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import logo from "@/assets/logo.png";
+import newcaseLogo from "@/assets/newcase-logo.png";
 
 interface Agendamento {
   id: string;
@@ -167,17 +169,25 @@ const Admin = () => {
   if (!isAdmin) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-primary">Painel Administrativo</h1>
-            <p className="text-muted-foreground">Gerencie os agendamentos da loja</p>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b-2 border-border backdrop-blur-sm sticky top-0 z-50 bg-background/80">
+        <div className="container mx-auto px-4 py-6 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <img src={newcaseLogo} alt="NEW CASE" className="h-14 md:h-18 w-auto" />
+            <img src={logo} alt="Logo" className="h-12 md:h-16 w-auto" />
           </div>
           <Button variant="outline" onClick={handleLogout}>
             <LogOut className="mr-2 h-4 w-4" />
             Sair
           </Button>
+        </div>
+      </header>
+
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-primary">Painel Administrativo</h1>
+          <p className="text-muted-foreground">Gerencie os agendamentos da loja</p>
         </div>
 
         <Card>
