@@ -8,14 +8,16 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { LogOut, Trash2 } from "lucide-react";
+import { LogOut, Trash2, Eye, Calendar as CalendarIcon, Settings } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import logo from "@/assets/logo.png";
 import newcaseLogo from "@/assets/newcase-logo.png";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Eye } from "lucide-react";
+import { ServicosManager } from "@/components/admin/ServicosManager";
+import { CalendarioManager } from "@/components/admin/CalendarioManager";
 
 interface Agendamento {
   id: string;
@@ -189,10 +191,24 @@ const Admin = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-primary">Painel Administrativo</h1>
-          <p className="text-muted-foreground">Gerencie os agendamentos da loja</p>
+          <p className="text-muted-foreground">Gerencie os agendamentos, serviços e calendário</p>
         </div>
 
-        <Card>
+        <Tabs defaultValue="agendamentos" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="agendamentos">Agendamentos</TabsTrigger>
+            <TabsTrigger value="servicos">
+              <Settings className="mr-2 h-4 w-4" />
+              Serviços
+            </TabsTrigger>
+            <TabsTrigger value="calendario">
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              Calendário
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="agendamentos">
+            <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Agendamentos ({agendamentos.length})</CardTitle>
@@ -391,6 +407,16 @@ const Admin = () => {
             )}
           </CardContent>
         </Card>
+          </TabsContent>
+
+          <TabsContent value="servicos">
+            <ServicosManager />
+          </TabsContent>
+
+          <TabsContent value="calendario">
+            <CalendarioManager />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

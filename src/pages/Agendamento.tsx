@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,19 +24,60 @@ const agendamentoSchema = z.object({
   descricao: z.string().min(10, "Descreva o problema com mais detalhes").max(500),
 });
 
+interface TipoServico {
+  id: string;
+  nome: string;
+  opcoes_extras: string[];
+  ativo: boolean;
+}
+
 const Agendamento = () => {
   const navigate = useNavigate();
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [modelo, setModelo] = useState("");
   const [servico, setServico] = useState("");
-  const [tipoTela, setTipoTela] = useState("");
-  const [tipoBateria, setTipoBateria] = useState("");
+  const [opcaoExtra, setOpcaoExtra] = useState("");
   const [descricao, setDescricao] = useState("");
   const [date, setDate] = useState<Date>();
   const [horario, setHorario] = useState("");
   const [loading, setLoading] = useState(false);
   const [horariosOcupados, setHorariosOcupados] = useState<string[]>([]);
+  const [tiposServico, setTiposServico] = useState<TipoServico[]>([]);
+  const [datasBloqueadas, setDatasBloqueadas] = useState<Date[]>([]);
+
+  useEffect(() => {
+    fetchTiposServico();
+    fetchDatasBloqueadas();
+  }, []);
+
+  const fetchTiposServico = async () => {
+    const { data } = await supabase
+      .from("tipos_servico")
+      .select("*")
+      .eq("ativo", true)
+      .order("ordem", { ascending: true });
+
+    if (data) {
+      setTiposServico(data.map(s => ({
+        ...s,
+        opcoes_extras: s.opcoes_extras as string[]
+      })));
+    }
+  };
+
+  const fetchDatasBloqueadas = async () => {
+    const { data } = await supabase
+      .from("datas_bloqueadas")
+      .select("data");
+
+    if (data) {
+      const datas = data.map(d => new Date(d.data + "T00:00:00"));
+      setDatasBloqueadas(datas);
+    }
+  };
+
+  const servicoSelecionado = tiposServico.find(s => s.nome === servico);
 
   const horarios = [
     "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
@@ -84,13 +125,8 @@ const Agendamento = () => {
         return;
       }
 
-      if (servico === "Troca de tela" && !tipoTela) {
-        toast.error("Selecione o tipo de tela");
-        return;
-      }
-
-      if (servico === "Bateria" && !tipoBateria) {
-        toast.error("Selecione o tipo de bateria");
+      if (servicoSelecionado?.opcoes_extras.length > 0 && !opcaoExtra) {
+        toast.error("Selecione uma opção");
         return;
       }
 
@@ -98,10 +134,8 @@ const Agendamento = () => {
 
       let descricaoCompleta = validacao.descricao;
       
-      if (servico === "Troca de tela") {
-        descricaoCompleta = `Tipo de tela: ${tipoTela}\n\n${validacao.descricao}`;
-      } else if (servico === "Bateria") {
-        descricaoCompleta = `Tipo de bateria: ${tipoBateria}\n\n${validacao.descricao}`;
+      if (opcaoExtra) {
+        descricaoCompleta = `Opção selecionada: ${opcaoExtra}\n\n${validacao.descricao}`;
       }
 
       const { data, error } = await supabase
@@ -203,48 +237,33 @@ const Agendamento = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="servico">Tipo de Serviço *</Label>
-                <Select value={servico} onValueChange={(value) => { setServico(value); setTipoTela(""); setTipoBateria(""); }} required>
+                <Select value={servico} onValueChange={(value) => { setServico(value); setOpcaoExtra(""); }} required>
                   <SelectTrigger className="bg-secondary border-border">
                     <SelectValue placeholder="Selecione o serviço" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover border-border z-50">
-                    <SelectItem value="Troca de tela">Troca de tela</SelectItem>
-                    <SelectItem value="Bateria">Bateria</SelectItem>
-                    <SelectItem value="Conector">Conector de carga</SelectItem>
-                    <SelectItem value="Software">Problemas de software</SelectItem>
-                    <SelectItem value="Câmera">Câmera</SelectItem>
-                    <SelectItem value="Outro">Outro</SelectItem>
+                    {tiposServico.map((tipo) => (
+                      <SelectItem key={tipo.id} value={tipo.nome}>
+                        {tipo.nome}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              {servico === "Troca de tela" && (
+              {servicoSelecionado && servicoSelecionado.opcoes_extras.length > 0 && (
                 <div className="space-y-2">
-                  <Label htmlFor="tipoTela">Tipo de Tela *</Label>
-                  <Select value={tipoTela} onValueChange={setTipoTela} required>
+                  <Label htmlFor="opcaoExtra">Opção *</Label>
+                  <Select value={opcaoExtra} onValueChange={setOpcaoExtra} required>
                     <SelectTrigger className="bg-secondary border-border">
-                      <SelectValue placeholder="Selecione o tipo de tela" />
+                      <SelectValue placeholder="Selecione uma opção" />
                     </SelectTrigger>
                     <SelectContent className="bg-popover border-border z-50">
-                      <SelectItem value="FRONTAL INCELL">FRONTAL INCELL</SelectItem>
-                      <SelectItem value="FRONTAL ORIGINAL PRIMEIRA LINHA">FRONTAL ORIGINAL PRIMEIRA LINHA</SelectItem>
-                      <SelectItem value="FRONTAL ORIGINAL">FRONTAL ORIGINAL</SelectItem>
-                      <SelectItem value="FRONTAL ORIGINAL TROCA C.I">FRONTAL ORIGINAL TROCA C.I</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
-              {servico === "Bateria" && (
-                <div className="space-y-2">
-                  <Label htmlFor="tipoBateria">Tipo de Bateria *</Label>
-                  <Select value={tipoBateria} onValueChange={setTipoBateria} required>
-                    <SelectTrigger className="bg-secondary border-border">
-                      <SelectValue placeholder="Selecione o tipo de bateria" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover border-border z-50">
-                      <SelectItem value="Bateria Primeira Linha Premium">Bateria Primeira Linha Premium</SelectItem>
-                      <SelectItem value="Bateria Original troca C.I">Bateria Original troca C.I</SelectItem>
+                      {servicoSelecionado.opcoes_extras.map((opcao, index) => (
+                        <SelectItem key={index} value={opcao}>
+                          {opcao}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -283,7 +302,24 @@ const Agendamento = () => {
                       mode="single"
                       selected={date}
                       onSelect={handleDateSelect}
-                      disabled={(date) => date < new Date()}
+                      disabled={(date) => {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        
+                        // Bloqueia datas passadas
+                        if (date < today) return true;
+                        
+                        // Bloqueia domingos
+                        if (date.getDay() === 0) return true;
+                        
+                        // Bloqueia datas específicas
+                        return datasBloqueadas.some(
+                          blockedDate => 
+                            blockedDate.getFullYear() === date.getFullYear() &&
+                            blockedDate.getMonth() === date.getMonth() &&
+                            blockedDate.getDate() === date.getDate()
+                        );
+                      }}
                       initialFocus
                       className="pointer-events-auto"
                     />

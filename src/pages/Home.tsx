@@ -9,7 +9,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b-2 border-border backdrop-blur-sm sticky top-0 z-50 bg-background/80">
+      <header className="border-b-2 border-border backdrop-blur-sm sticky top-0 z-50 bg-background/80 animate-slide-down">
         <div className="container mx-auto px-4 py-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <img src={newcaseLogo} alt="NEW CASE" className="h-14 md:h-18 w-auto" />

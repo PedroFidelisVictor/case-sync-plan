@@ -62,6 +62,27 @@ export type Database = {
         }
         Relationships: []
       }
+      datas_bloqueadas: {
+        Row: {
+          created_at: string
+          data: string
+          id: string
+          motivo: string | null
+        }
+        Insert: {
+          created_at?: string
+          data: string
+          id?: string
+          motivo?: string | null
+        }
+        Update: {
+          created_at?: string
+          data?: string
+          id?: string
+          motivo?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -79,6 +100,36 @@ export type Database = {
           created_at?: string
           id?: string
           nome?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tipos_servico: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          nome: string
+          opcoes_extras: Json | null
+          ordem: number
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome: string
+          opcoes_extras?: Json | null
+          ordem?: number
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome?: string
+          opcoes_extras?: Json | null
+          ordem?: number
           updated_at?: string
         }
         Relationships: []
