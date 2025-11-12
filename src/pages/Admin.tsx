@@ -243,6 +243,7 @@ const Admin = () => {
                       <TableHead>Telefone</TableHead>
                       <TableHead>Modelo</TableHead>
                       <TableHead>Serviço</TableHead>
+                      <TableHead>Descrição</TableHead>
                       <TableHead>Data/Hora</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Ações</TableHead>
@@ -266,6 +267,9 @@ const Admin = () => {
                         <TableCell>{agendamento.telefone}</TableCell>
                         <TableCell>{agendamento.modelo_celular}</TableCell>
                         <TableCell>{agendamento.tipo_servico}</TableCell>
+                        <TableCell className="max-w-[320px] truncate" title={agendamento.descricao_problema}>
+                          {agendamento.descricao_problema}
+                        </TableCell>
                         <TableCell>
                           <div className="text-sm">
                             <p>{format(parseISO(agendamento.data_agendamento), "dd/MM/yyyy", { locale: ptBR })}</p>

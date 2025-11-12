@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Search, CheckCircle2, Clock, Wrench, Package } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 interface Agendamento {
@@ -171,7 +171,7 @@ const Acompanhamento = () => {
                   <div>
                     <p className="text-sm text-muted-foreground">Data Agendamento</p>
                     <p className="font-semibold">
-                      {format(new Date(agendamento.data_agendamento), "dd/MM/yyyy", { locale: ptBR })} às {agendamento.horario_agendamento.substring(0, 5)}
+                      {format(parseISO(agendamento.data_agendamento), "dd/MM/yyyy", { locale: ptBR })} às {agendamento.horario_agendamento.substring(0, 5)}
                     </p>
                   </div>
                 </div>
